@@ -48,3 +48,13 @@ def validate(self, attrs):
         """
         user = User.objects.create_user(**validated_data)
         return user
+    
+class UserLoginSerializer(serializers.ModelSerializer):
+    """ Serializer for user login."""
+
+    email = serializers.EmailField(max_length=255)
+    password = serializers.CharField(style={'input_type': 'password'}, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['email', 'password']
