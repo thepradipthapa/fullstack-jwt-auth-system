@@ -12,28 +12,28 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         fields = ['email', 'name', 'password', 'password2', 'tc']
         extra_kwargs = {'password': {'write_only': True}}  # Hide password from response
 
-def validate(self, attrs):
-    """
-    Validates that the password and confirm password fields match.
+    def validate(self, attrs):
+        """
+        Validates that the password and confirm password fields match.
 
-    Args:
-        attrs (dict): Dictionary of serializer input data.
+        Args:
+            attrs (dict): Dictionary of serializer input data.
 
-    Raises:
-        serializers.ValidationError: If passwords do not match.
+        Raises:
+            serializers.ValidationError: If passwords do not match.
 
-    Returns:
-        dict: The validated data if passwords match.
-    """
-    # Extract password fields from input data
-    password = attrs.get('password')
-    password2 = attrs.get('password2')
+        Returns:
+            dict: The validated data if passwords match.
+        """
+        # Extract password fields from input data
+        password = attrs.get('password')
+        password2 = attrs.get('password2')
 
-    # Check if both passwords match
-    if password != password2:
-        raise serializers.ValidationError("Passwords and confirm passwords do not match")
+        # Check if both passwords match
+        if password != password2:
+            raise serializers.ValidationError("Passwords and confirm passwords do not match")
 
-    return attrs
+        return attrs
 
 
     def create(self, validated_data):
@@ -58,3 +58,8 @@ class UserLoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'password']
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id','email', 'name']

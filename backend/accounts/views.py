@@ -2,9 +2,21 @@ from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserRegistrationSerializer, UserLoginSerializer
+from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer
 from accounts.renderers import UserRenderer
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.permissions import IsAuthenticated
 
+
+# Utility function to generate JWT tokens for a user
+def get_tokens_for_user(user):
+
+    refresh = RefreshToken.for_user(user)
+
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
 
 class UserRegistrationView(APIView):
     """
@@ -20,9 +32,10 @@ class UserRegistrationView(APIView):
         # Validate the data
         if serializer.is_valid():
             # Save the new user to the database
-            serializer.save()
+            user = serializer.save()
+            tokens = get_tokens_for_user(user)
             return Response(
-                {"message": "User registered successfully"},
+                {"message": "User registered successfully", "tokens": tokens},
                 status=status.HTTP_201_CREATED
             )
 
@@ -45,8 +58,9 @@ class UserLoginView(APIView):
             password = serializer.validated_data.get('password')
             user = authenticate(email=email, password=password)
             if user:
+                tokens = get_tokens_for_user(user)
                 return Response(
-                    {"message": "User logged in successfully"},
+                    {"message": "User logged in successfully", "tokens": tokens},
                     status=status.HTTP_200_OK
                 )
             else:
@@ -56,4 +70,16 @@ class UserLoginView(APIView):
                 )
         # Return validation errors if data is invalid
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class UserProfileView(APIView):
+    """ 
+    API view to handle user profile.
 
+    Accepts GET requests and returns the Authenticated user's profile information.
+
+    """
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, format=None):
+        serializer = UserProfileSerializer(request.user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
