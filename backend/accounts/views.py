@@ -3,6 +3,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .serializers import UserRegistrationSerializer, UserLoginSerializer
+from accounts.renderers import UserRenderer
 
 
 class UserRegistrationView(APIView):
@@ -12,7 +13,7 @@ class UserRegistrationView(APIView):
     Accepts POST requests with user data, validates it, and creates a new user.
     Returns a success message or validation errors.
     """
-
+    renderer_classes = [UserRenderer]
     def post(self, request):
         serializer = UserRegistrationSerializer(data=request.data)
 
@@ -34,7 +35,7 @@ class UserLoginView(APIView):
 
     Accepts POST requests with user credentials, validates them, and returns a success message or errors.
     """
-
+    renderer_classes = [UserRenderer]
     def post(self, request):
         serializer = UserLoginSerializer(data=request.data)
 
