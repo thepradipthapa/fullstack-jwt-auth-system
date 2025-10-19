@@ -64,16 +64,12 @@ class UserProfileSerializer(serializers.ModelSerializer):
         model = User
         fields = ['id','email', 'name']
 
-class ChangePasswordSerializer(serializers.Serializer):
+class ChangePasswordSerializer(serializers.Serializer): 
     """
     Serializer for password change endpoint.    
     """
     password = serializers.CharField(required=True, write_only=True)
     password2 = serializers.CharField(required=True, write_only=True)
-
-    class Meta:
-        model = User
-        fields = ['password', 'password2']
 
     def validate(self, attrs):
         """
