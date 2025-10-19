@@ -2,10 +2,20 @@ from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, ChangePasswordSerializer
+from .serializers import (
+    UserRegistrationSerializer, 
+    UserLoginSerializer, 
+    UserProfileSerializer, 
+    ChangePasswordSerializer, 
+    SendPasswordResetEmailSerializer
+ )
 from accounts.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import PasswordResetTokenGenerator
+from accounts.models import User
 
 
 # Utility function to generate JWT tokens for a user
@@ -103,3 +113,27 @@ class ChangeUserPasswordView(APIView):
             serializer.save()
             return Response({"message": "Password changed successfully."}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class SendPasswordResetEmailView(APIView):
+    """
+    API view to handle sending password reset email.
+
+    Accepts POST requests with user email, validates it, and sends a password reset email.
+    """
+    renderer_classes = [UserRenderer]
+
+    def post(self, request, format=None):
+        serializer = SendPasswordResetEmailSerializer(data=request.data)
+
+        # Validate the data(Email)
+        if serializer.is_valid(raise_exception=True):
+            email = serializer.validated_data.get('email')
+            user = User.objects.get(email=email)
+            user_id = urlsafe_base64_encode(force_bytes(user.id))
+            token = PasswordResetTokenGenerator().make_token(user)
+   
+            link = "http://localhost:3000/api/user/reset/" + user_id + "/" + token
+            return Response(
+                {"message": "Password reset email sent successfully."},
+                status=status.HTTP_200_OK
+            )

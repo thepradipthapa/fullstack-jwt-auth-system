@@ -99,3 +99,28 @@ class ChangePasswordSerializer(serializers.Serializer):
         user.set_password(password) # hashes the password
         user.save() 
         return user
+
+
+class SendPasswordResetEmailSerializer(serializers.Serializer):
+    """ Serializer for sending password reset email."""
+
+    email = serializers.EmailField(max_length=255)
+
+
+    def validate_email(self, email):
+        """
+        Validates that the provided email exists in the system.
+
+        Args:
+            value (str): The email address to validate.
+
+        Returns:
+            str: The validated email address.
+
+        Raises:
+            serializers.ValidationError: If the email does not exist in the system.
+        """
+
+        if not User.objects.filter(email=email).exists():
+            raise serializers.ValidationError("User with this email does not exist.")
+        return email
