@@ -63,3 +63,43 @@ class UserProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id','email', 'name']
+
+class ChangePasswordSerializer(serializers.Serializer):
+    """
+    Serializer for password change endpoint.    
+    """
+    password = serializers.CharField(required=True, write_only=True)
+    password2 = serializers.CharField(required=True, write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['password', 'password2']
+
+    def validate(self, attrs):
+        """
+        Validates that the new password and confirm password fields match.
+
+        Args:
+            attrs (dict): Dictionary of serializer input data.
+
+        Returns:
+            dict: The validated data if passwords match.
+
+        Raises:
+            serializers.ValidationError: If passwords do not match.
+        """
+        password = attrs.get('password')
+        password2 = attrs.get('password2')
+
+        if password != password2:
+            raise serializers.ValidationError("New password and confirm password do not match.")
+        
+        return attrs
+    
+
+    def save(self, **kwargs):
+        user = self.context.get('user')
+        password = self.validated_data['password']
+        user.set_password(password) # hashes the password
+        user.save() 
+        return user
