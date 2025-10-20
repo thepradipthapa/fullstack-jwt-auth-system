@@ -7,12 +7,13 @@ from .serializers import (
     UserLoginSerializer, 
     UserProfileSerializer, 
     ChangePasswordSerializer, 
-    SendPasswordResetEmailSerializer
+    SendPasswordResetEmailSerializer,
+    ResetPasswordSerializer
  )
 from accounts.renderers import UserRenderer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
-from django.utils.http import urlsafe_base64_encode
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from accounts.models import User
@@ -133,7 +134,46 @@ class SendPasswordResetEmailView(APIView):
             token = PasswordResetTokenGenerator().make_token(user)
    
             link = "http://localhost:3000/api/user/reset/" + user_id + "/" + token
+            
+            print("Password reset link:", link)  # In real application, send this link via email
             return Response(
                 {"message": "Password reset email sent successfully."},
                 status=status.HTTP_200_OK
             )
+            
+            
+class ResetPasswordView(APIView):
+    """
+    API view to handle password reset.
+
+    Accepts POST requests with new password, user ID, and token, validates them, and resets the user's password.
+    """
+    renderer_classes = [UserRenderer]
+
+    def post(self, request, uidb64, token, format=None):
+        serializer = ResetPasswordSerializer(data=request.data)
+
+        # Validate the data
+        if serializer.is_valid(raise_exception=True):
+            try:
+                user_id = force_bytes(urlsafe_base64_decode(uidb64))
+                user = User.objects.get(id=user_id)
+
+                if not PasswordResetTokenGenerator().check_token(user, token):
+                    return Response(
+                        {"error": "Invalid or expired token."},
+                        status=status.HTTP_400_BAD_REQUEST
+                    )
+
+                new_password = serializer.validated_data.get('new_password')
+                user.set_password(new_password)
+                user.save()
+                return Response(
+                    {"message": "Password reset successfully."},
+                    status=status.HTTP_200_OK
+                )
+            except Exception as e:
+                return Response(
+                    {"error": "Something went wrong."},
+                    status=status.HTTP_400_BAD_REQUEST
+                )

@@ -4,7 +4,8 @@ from .views import (
     UserLoginView, 
     UserProfileView, 
     ChangeUserPasswordView, 
-    SendPasswordResetEmailView
+    SendPasswordResetEmailView,
+    ResetPasswordView
 )
 
 urlpatterns = [
@@ -12,5 +13,6 @@ urlpatterns = [
     path('login/', UserLoginView.as_view(), name='user-login'),
     path('profile/', UserProfileView.as_view(), name='user-profile'),
     path('changepassword/', ChangeUserPasswordView.as_view(), name='change-password'),
-    path('send-password-reset-email/', SendPasswordResetEmailView.as_view(), name='send-password-reset-email')
+    path('send-password-reset-email/', SendPasswordResetEmailView.as_view(), name='send-password-reset-email'),
+    path('reset-password/<uidb64>/<token>/', ResetPasswordView.as_view(), name='reset-password'),
 ]
