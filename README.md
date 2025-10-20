@@ -1,1 +1,0 @@
-# fullstack-jwt-auth-system

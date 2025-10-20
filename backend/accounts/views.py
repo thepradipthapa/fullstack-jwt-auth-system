@@ -17,6 +17,7 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from accounts.models import User
+from .utils import send_password_reset_email
 
 
 # Utility function to generate JWT tokens for a user
@@ -135,7 +136,8 @@ class SendPasswordResetEmailView(APIView):
    
             link = "http://localhost:3000/api/user/reset/" + user_id + "/" + token
             
-            print("Password reset link:", link)  # In real application, send this link via email
+            send_password_reset_email(email, link)
+            
             return Response(
                 {"message": "Password reset email sent successfully."},
                 status=status.HTTP_200_OK
