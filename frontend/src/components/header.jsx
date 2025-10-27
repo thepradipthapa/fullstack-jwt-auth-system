@@ -1,4 +1,5 @@
 import React from 'react'
+import Button from './Button'
 
 const header = () => {
   return (
@@ -7,9 +8,9 @@ const header = () => {
             <a className='navbar-brand text-light' href="">FullStack JWT Auth System</a>
 
         <div>
-            <a className='btn btn-outline-danger' href="">Login</a>
+            <Button text='Login' class='btn-danger' />
             &nbsp; &nbsp;
-            <a className='btn btn-danger' href="">Register</a>
+            <Button text='Register' class='btn-outline-danger' />
         </div>
         </nav>
     </>
