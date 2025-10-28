@@ -5,7 +5,7 @@ import { Link } from 'react-router'
 const header = () => {
   return (
        <>
-        <nav className='navbar container mt-3'>
+        <nav className='navbar container pt-4 align-items-start'>
             <Link className='navbar-brand text-light' to="/">FullStack JWT Auth System</Link>
 
         <div>
