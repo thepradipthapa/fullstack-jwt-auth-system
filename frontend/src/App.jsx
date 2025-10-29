@@ -4,6 +4,9 @@ import Login from './components/Login.jsx'
 import Home from './components/home.jsx'
 import Footer from './components/footer.jsx'
 import Header from './components/header.jsx'
+import SendPasswordResetLink from './components/SendPasswordResetLink.jsx'
+import ResetPassword from './components/ResetPassword.jsx'
+import Dashboard from './components/Dashboard.jsx'
 import { BrowserRouter, Routes, Route } from "react-router";
 
 function App() {
@@ -16,6 +19,9 @@ function App() {
         <Route path='/' element={<Home />}/>
         <Route path='/register' element={<Register />}/>
         <Route path='/login' element={<Login />}/>
+        <Route path='/forgot-password' element={<SendPasswordResetLink />}/>
+        <Route path='/reset-password' element={<ResetPassword />}/>
+        <Route path='/dashboard' element={<Dashboard />}/>
       </Routes>
       <Footer/>
     </BrowserRouter>
