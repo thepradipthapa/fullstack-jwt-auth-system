@@ -7,6 +7,7 @@ import Header from './components/header.jsx'
 import SendPasswordResetLink from './components/SendPasswordResetLink.jsx'
 import ResetPassword from './components/ResetPassword.jsx'
 import Dashboard from './components/Dashboard.jsx'
+import NotFound from './components/NotFound.jsx'
 import { BrowserRouter, Routes, Route } from "react-router";
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path='/forgot-password' element={<SendPasswordResetLink />}/>
         <Route path='/reset-password' element={<ResetPassword />}/>
         <Route path='/dashboard' element={<Dashboard />}/>
+        <Route path='*' element={<NotFound />} />
       </Routes>
       <Footer/>
     </BrowserRouter>
