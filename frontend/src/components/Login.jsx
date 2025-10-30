@@ -1,29 +1,63 @@
-import React from 'react'
+import { useState} from 'react'
 import {Link} from 'react-router'
+import axios from 'axios'
+import { useNavigate } from 'react-router'
 
 const Login = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
+
+  const navigate = useNavigate()
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    const payload = {
+      email,
+      password
+    };
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/user/login/', payload);
+      setErrors({});
+      console.log("login successfull")
+      localStorage.setItem('accessToken', response.data.tokens.access)
+      localStorage.setItem('refreshToken', response.data.tokens.refresh)
+      navigate('/dashboard')
+      // Handle successful login (e.g., store token, redirect)
+    } catch (error) {
+      setErrors(error.response.data.error);
+      console.log(error.response.data.error);
+    }
+  };
+
   return (
     <>
     <div className="container">
       <div className="row justify-content-center">
-        <div className="col-md-6 bg-dark p-4 rounded-2">
+        <div className="col-md-6 bg-light-dark p-4 rounded-2">
           <h3 className="text-light text-center mb-4">Login</h3>
-          <form>
+          <form onSubmit={handleLogin}>
             {/* Email */}
             <input
               type="email"
               className="form-control mb-3"
               placeholder="Enter Your Email"
-              required
+              value={email}
+              onChange={(e)=>setEmail(e.target.value)}
             />
-
+            {errors.email && <p className="text-danger">{errors.email}</p>}
             {/* Password */}
             <input
               type="password"
               className="form-control mb-3"
               placeholder="Enter Your Password"
-              required
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
             />
+            {errors.password && <p className="text-danger">{errors.password}</p>}
+            {errors.non_field_errors && <p className="text-danger">{errors.non_field_errors}</p>}
 
             {/* Remember me + Forgot password */}
             <div className="d-flex justify-content-between align-items-center mb-3">
@@ -51,7 +85,7 @@ const Login = () => {
             {/* Signup link */}
             <p className="text-center text-light mt-3">
               Don’t have an account?{" "}
-              <Link to="/signup" className="text-info">
+              <Link to="/register" className="text-info">
                 Sign up
               </Link>
             </p>
