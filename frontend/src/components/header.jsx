@@ -1,21 +1,41 @@
-import React from 'react'
+import {useContext} from 'react'
 import Button from './Button'
-import { Link } from 'react-router'
+import { Link , useNavigate} from 'react-router'
+import {AuthContext} from '../AuthProvider.jsx'
 
-const header = () => {
+
+const Header = () => {
+  const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext);
+
+  const navigate = useNavigate()
+  const handleLogout = () => {
+    localStorage.removeItem('accessToken')
+    localStorage.removeItem('refreshToken')
+    setIsLoggedIn(false)
+    navigate('/login')
+  }
   return (
        <>
         <nav className='navbar container pt-4 align-items-start'>
             <Link className='navbar-brand text-light' to="/">FullStack JWT Auth System</Link>
 
         <div>
+          {isLoggedIn ? (
+            <>
+              <button onClick={handleLogout} className='btn btn-danger'>Logout</button>
+            </>
+          ) : (
+            <>
             <Button text='Login' class='btn-danger' url='/login'/>
             &nbsp; &nbsp;
             <Button text='Register' class='btn-outline-danger' url='/register'/>
+            </>
+          )}
+            
         </div>
         </nav>
     </>
   )
 }
 
-export default header
+export default Header

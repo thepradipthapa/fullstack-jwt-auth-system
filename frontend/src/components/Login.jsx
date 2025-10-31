@@ -1,12 +1,14 @@
-import { useState} from 'react'
+import { useState, useContext} from 'react'
 import {Link} from 'react-router'
 import axios from 'axios'
 import { useNavigate } from 'react-router'
+import { AuthContext } from '../AuthProvider.jsx'
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const {isLoggedIn, setIsLoggedIn} = useContext(AuthContext)
 
   const navigate = useNavigate()
 
@@ -24,8 +26,9 @@ const Login = () => {
       console.log("login successfull")
       localStorage.setItem('accessToken', response.data.tokens.access)
       localStorage.setItem('refreshToken', response.data.tokens.refresh)
+      setIsLoggedIn(true)
+      console.log(isLoggedIn)
       navigate('/dashboard')
-      // Handle successful login (e.g., store token, redirect)
     } catch (error) {
       setErrors(error.response.data.error);
       console.log(error.response.data.error);
