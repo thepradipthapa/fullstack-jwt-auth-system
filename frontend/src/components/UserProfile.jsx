@@ -1,16 +1,11 @@
-function UserProfile() {
-  const user = {
-    name: "Jane Doe",
-    email: "jane@example.com",
-    role: "Member"
-  };
+function UserProfile({profile}) {
 
   return (
     <div className="card bg-dark text-light p-3 mb-4">
       <h5 className="mb-3">User Profile</h5>
-      <p><strong>Name:</strong> {user.name}</p>
-      <p><strong>Email:</strong> {user.email}</p>
-      <p><strong>Role:</strong> {user.role}</p>
+      <p><strong>Role:</strong> {profile?.id}</p>
+      <p><strong>Name:</strong> {profile?.name}</p>
+      <p><strong>Email:</strong> {profile?.email}</p>
     </div>
   );
 }

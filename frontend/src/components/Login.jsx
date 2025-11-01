@@ -23,15 +23,12 @@ const Login = () => {
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/user/login/', payload);
       setErrors({});
-      console.log("login successfull")
       localStorage.setItem('accessToken', response.data.tokens.access)
       localStorage.setItem('refreshToken', response.data.tokens.refresh)
       setIsLoggedIn(true)
-      console.log(isLoggedIn)
       navigate('/dashboard')
     } catch (error) {
       setErrors(error.response.data.error);
-      console.log(error.response.data.error);
     }
   };
 
