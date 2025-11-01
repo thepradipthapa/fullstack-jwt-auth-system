@@ -2,6 +2,7 @@ import UserProfile from "./UserProfile";
 import ChangePassword from "./ChangePassword";
 import { useState, useEffect } from "react";
 import axios from "axios";
+import axiosInstance from "../axiosInstance";
 
 
 function Dashboard() {
@@ -9,11 +10,7 @@ function Dashboard() {
   useEffect(() => {
     const protectedDashboard = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/user/profile/", {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        });
+        const response = await axiosInstance.get("/profile/");
         setProfile(response.data);
       } catch (error) {
         console.error("Error fetching protected dashboard:", error);

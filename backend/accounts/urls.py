@@ -7,6 +7,9 @@ from .views import (
     SendPasswordResetEmailView,
     ResetPasswordView
 )
+from rest_framework_simplejwt.views import (
+    TokenRefreshView,
+)
 
 urlpatterns = [
     path('register/', UserRegistrationView.as_view(), name='user-registration'),
@@ -15,4 +18,5 @@ urlpatterns = [
     path('changepassword/', ChangeUserPasswordView.as_view(), name='change-password'),
     path('send-password-reset-email/', SendPasswordResetEmailView.as_view(), name='send-password-reset-email'),
     path('reset-password/<uidb64>/<token>/', ResetPasswordView.as_view(), name='reset-password'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
