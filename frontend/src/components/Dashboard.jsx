@@ -1,7 +1,6 @@
 import UserProfile from "./UserProfile";
 import ChangePassword from "./ChangePassword";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import axiosInstance from "../axiosInstance";
 
 
