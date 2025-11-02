@@ -25,6 +25,7 @@ function ChangePassword() {
 
     } catch (error) {
       setErrors(error.response.data.error);
+      console.log(error.response.data.error);
     }
   }
 
@@ -48,7 +49,6 @@ function ChangePassword() {
           onChange={(e) => setPassword2(e.target.value)}
           required
         />
-        {errors && <p className="text-danger">{errors}</p>}
         {errors.non_field_errors && <p className="text-danger">{errors.non_field_errors}</p>}
         <button type="submit" className="btn btn-danger w-100">
           Update Password
