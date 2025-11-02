@@ -54,7 +54,6 @@ axiosInstance.interceptors.response.use(
         console.error("Refresh token expired, redirecting to login");
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        window.location.href = "/login";
       }
     }
 
