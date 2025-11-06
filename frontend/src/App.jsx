@@ -24,7 +24,7 @@ function App() {
           <Route path='/register' element={<PublicRoute><Register /></PublicRoute>} />
           <Route path='/login' element={<PublicRoute><Login /></PublicRoute>} />
           <Route path='/forgot-password' element={<SendPasswordResetLink />} />
-          <Route path='/reset-password' element={<ResetPassword />} />
+          <Route path='api/user/reset-password/:uid/:token/' element={<ResetPassword />} />
           <Route path='/dashboard' element={<PrivateRoute><Dashboard /></PrivateRoute>} />
           <Route path='*' element={<NotFound />} />
         </Routes>

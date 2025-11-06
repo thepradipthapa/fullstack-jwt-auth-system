@@ -1,6 +1,28 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import axiosInstance from "../axiosInstance";
 
 function ForgotPassword() {
+  const [email, setEmail] = useState("");
+  const [message, setMessage] = useState("");
+  const [errors, setErrors] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const payload = { email };
+
+    try {
+      const response = await axiosInstance.post("/send-password-reset-email/", payload);
+      setErrors({});
+      setMessage(response.data);
+      console.log(response.data);
+    } catch (error) {
+      setMessage("An error occurred. Please try again later.");
+       setErrors(error.response.data.error);
+    }
+  };
+
   return (
     <div className="container">
       <div className="row justify-content-center">
@@ -10,13 +32,15 @@ function ForgotPassword() {
             Enter your email address and we’ll send you a link to reset your password.
           </p>
 
-          <form>
+          <form onSubmit={handleSubmit}>
             {/* Email */}
             <input
               type="email"
               className="form-control mb-3"
               placeholder="Enter Your Email"
               required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
 
             {/* Submit */}

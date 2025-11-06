@@ -18,10 +18,13 @@ from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
 from accounts.models import User
 from .utils import send_password_reset_email
+from rest_framework.exceptions import AuthenticationFailed
 
 
 # Utility function to generate JWT tokens for a user
 def get_tokens_for_user(user):
+    if not user.is_active:
+      raise AuthenticationFailed("User is not active")
 
     refresh = RefreshToken.for_user(user)
 
@@ -78,7 +81,7 @@ class UserLoginView(APIView):
             else:
                 return Response(
                     {"error": {'non_field_errors': ['Invalid email or password']}},
-                    status=status.HTTP_404_NOT_FOUND
+                    status=status.HTTP_401_UNAUTHORIZED
                 )
         # Return validation errors if data is invalid
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -133,8 +136,9 @@ class SendPasswordResetEmailView(APIView):
             user = User.objects.get(email=email)
             user_id = urlsafe_base64_encode(force_bytes(user.id))
             token = PasswordResetTokenGenerator().make_token(user)
-   
-            link = "http://localhost:3000/api/user/reset/" + user_id + "/" + token
+
+            link = "http://localhost:5173/api/user/reset-password/" + user_id + "/" + token + "/"
+            print("Password reset link:", link)
             
             send_password_reset_email(email, link)
             
@@ -167,7 +171,7 @@ class ResetPasswordView(APIView):
                         status=status.HTTP_400_BAD_REQUEST
                     )
 
-                new_password = serializer.validated_data.get('new_password')
+                new_password = serializer.validated_data.get('password')
                 user.set_password(new_password)
                 user.save()
                 return Response(

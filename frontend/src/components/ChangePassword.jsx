@@ -22,10 +22,8 @@ function ChangePassword() {
       // Clear the form fields
       setPassword("");
       setPassword2("");
-
     } catch (error) {
       setErrors(error.response.data.error);
-      console.log(error.response.data.error);
     }
   }
 
@@ -39,7 +37,7 @@ function ChangePassword() {
           placeholder="New Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          required
+          
         />
         <input
           type="password"
@@ -47,15 +45,15 @@ function ChangePassword() {
           placeholder="Confirm New Password"
           value={password2}
           onChange={(e) => setPassword2(e.target.value)}
-          required
+          
         />
-        {errors.non_field_errors && <p className="text-danger">{errors.non_field_errors}</p>}
+        {/* {errors.non_field_errors && <p className="text-danger">{errors.non_field_errors}</p>} */}
         <button type="submit" className="btn btn-danger w-100">
           Update Password
         </button>
       </form>
       {/* Success message */}
-          {success && <div className="alert alert-success mt-3">Your password has been changed successfully.</div>}
+          {/* {success && <div className="alert alert-success mt-3">Your password has been changed successfully.</div>} */}
     </div>
   );
 }

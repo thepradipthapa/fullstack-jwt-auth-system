@@ -128,8 +128,8 @@ class SendPasswordResetEmailSerializer(serializers.Serializer):
 class ResetPasswordSerializer(serializers.Serializer):
     """ Serializer for resetting user password."""
 
-    new_password = serializers.CharField(required=True, write_only=True)
-    new_password2 = serializers.CharField(required=True, write_only=True)
+    password = serializers.CharField(required=True, write_only=True)
+    password2 = serializers.CharField(required=True, write_only=True)
 
     def validate(self, attrs):
         """
@@ -144,10 +144,10 @@ class ResetPasswordSerializer(serializers.Serializer):
         Raises:
             serializers.ValidationError: If passwords do not match.
         """
-        new_password = attrs.get('new_password')
-        new_password2 = attrs.get('new_password2')
+        password = attrs.get('password')
+        password2 = attrs.get('password2')
 
-        if new_password != new_password2:
+        if password != password2:
             raise serializers.ValidationError("New password and confirm password do not match.")
 
         return attrs
